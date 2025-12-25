@@ -186,7 +186,7 @@
 
         <p class="text-sm text-gray-300 max-w-prose">
             A digital chronicle of resilience — from tsetse hazards to restoration and revival. 
-            Curated by <span class="text-yellow-400 font-semibold">Dr. George Bagambisa</span>.
+            Curated by <span class="text-yellow-400 font-semibold"> Dr. George Bagambisa</span>.
         </p>
     </div>
 
@@ -418,16 +418,17 @@
         }
       ],
       timeline: [
-        { year: "1893", event: "Portal's Arrival", detail: "Sir Gerald Portal arrives at Entebbe-za-Mugula, a fishing village, and adopts it as the British station.", image: "1.jpg" },
-        { year: "1900", event: "Genesis of Golf", detail: "Sir Harry Hamilton Johnston lays out the Botanic Gardens, Zoo, and vanguard golf course alongside Lake Victoria." },
-        { year: "1902", event: "Course Construction", detail: "Work underway on the 9-hole course despite tsetse fly hazards; club formulation begins." },
-        { year: "1904", event: "Official Opening", detail: "Governor Col. Sir James Hayes Sadler opens the club on November 2nd with 35 European members." },
-        { year: "1908", event: "Expansion Influence", detail: "Entebbe expertise exported; A.C. Traffrey co-heads Kampala Gun Hill Course layout." },
-        { year: "1964", event: "Indigenous Golfers", detail: "First indigenous Ugandans, including Danny Nkata, play at Entebbe." },
-        { year: "1971", event: "Women Pioneers", detail: "First indigenous women golfers tee off at Entebbe on August 6th." },
-        { year: "1972", event: "The Siege", detail: "Uganda Army besieges the club, declaring it 'Officers Mess'; records and trophies lost." },
-        { year: "1974", event: "Revival Begins", detail: "Danny Nkata leads reformation; first post-siege medal on April 6th." },
-        { year: "1979-80", event: "Indigenous Captain", detail: "Augustine Osuban becomes the first indigenous Golf Captain." }
+        { year: "1893", event: "Portal's Arrival", detail: "Sir Gerald Portal arrives at Entebbe-za-Mugula, a fishing village, and adopts it as the British station.", image: "<img src=\"12.jpg\" alt=\"Portal's Arrival\"> </img>"},
+        { year: "1900", event: "Genesis of Golf", detail: "Sir Harry Hamilton Johnston lays out the Botanic Gardens, Zoo, and vanguard golf course alongside Lake Victoria.", image: "<img src=\"13.jpg\" alt=\"Genesis of Golf\"> </img>"},
+        { year: "1902", event: "Course Construction", detail: "Work underway on the 9-hole course despite tsetse fly hazards; club formulation begins.", image: "<img src=\"14.jpg\" alt=\"Course Construction\"> </img>" },
+        { year: "1904", event: "Official Opening", detail: "Governor Col. Sir James Hayes Sadler opens the club on November 2nd with 35 European members.", image: "<img src=\"15.jpeg\" alt=\"Official Opening\"> </img>" },
+        { year: "1910", event: "Course Expansion", detail: "Course expanded to 18 holes under Mr. A.C. Traffrey's guidance.", image: "<img src=\"16.jpeg\" alt=\"Course Expansion\"> </img>" },
+        { year: "1908", event: "Expansion Influence", detail: "Entebbe expertise exported; A.C. Traffrey co-heads Kampala Gun Hill Course layout.", image: "<img src=\"17.png\" alt=\"Expansion Influence\"> </img>" },
+        { year: "1964", event: "Indigenous Golfers", detail: "First indigenous Ugandans, including Danny Nkata, play at Entebbe.", image: "<img src=\"18.jpeg\" alt=\"Indigenous Golfers\"> </img>" },
+        { year: "1971", event: "Women Pioneers", detail: "First indigenous women golfers tee off at Entebbe on August 6th.", image: "<img src=\"19.webp\" alt=\"Women Pioneers\"> </img>" },
+        { year: "1972", event: "The Siege", detail: "Uganda Army besieges the club, declaring it 'Officers Mess'; records and trophies lost.", image: "<img src=\"3.jpeg\" alt=\"The Siege\"> </img>" },
+        { year: "1974", event: "Revival Begins", detail: "Danny Nkata leads reformation; first post-siege medal on April 6th.", image: "<img src=\"20.jpeg\" alt=\"Revival Begins\"> </img>" },
+        { year: "1979-80", event: "Indigenous Captain", detail: "Augustine Osuban becomes the first indigenous Golf Captain.", image: "<img src=\"21.jpg\" alt=\"Indigenous Captain\"> </img>" }
       ],
       champions: [
         { name: "M. P. Tennant", title: "East African Open Champion 1925 (+2 Handicap)" },
@@ -540,6 +541,7 @@
           <div class="text-[11px] font-bold text-yellow-400">${t.year}</div>
           <div class="font-semibold text-white">${t.event}</div>
           <div class="text-xs text-gray-400 mt-1 line-clamp-2">${t.detail}</div>
+          <div class="mt-2">${t.image}</div>
         `;
         item.addEventListener('click', ()=> openModal('timeline', t));
         container.appendChild(item);
@@ -687,7 +689,8 @@
         `;
       } else if(type === 'timeline'){
         title = `${payload.year} — ${payload.event}`;
-        html = `<div class="text-sm text-gray-200">${payload.detail}</div>`;
+        html = `<div class="mt-3">${payload.image}</div> 
+                <div class="text-sm text-gray-200 mt-3">${payload.detail}</div>`;
       } else if(type === 'history-full'){
         title = 'Full History';
         html = contentData.historyFull.map(p => `<p class="text-sm text-gray-200 mb-3">${p}</p>`).join('');
