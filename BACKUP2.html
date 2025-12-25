@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Entebbe Club | 100 Years of Heritage</title>
+
+  <!-- Tailwind - kept for prototyping; can be compiled into a smaller CSS for production -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#020617;
+      --accent:#eab308;
+      --muted:#94a3b8;
+      --glass: rgba(255,255,255,0.03);
+      --glass-strong: rgba(10,10,10,0.75);
+    }
+
+    /* Base page / mobile-first */
+    html,body{height:100%}
+    body{
+      font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,var(--bg) 0%, #03070d 100%);
+      color: #fff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Glassmorphism */
+    .glass{ background: var(--glass); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.04); }
+    .glass-strong{ background: var(--glass-strong); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.06); }
+
+    .font-serif-vintage { font-family: 'Playfair Display', serif; }
+
+    /* small helpers */
+    .no-scrollbar::-webkit-scrollbar{display:none}
+    .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+    .sr-only{ position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0 }
+
+    /* navigation active marker */
+    .nav-btn.active{ color:var(--accent); }
+    .nav-btn.active::after{ content:""; position:absolute; bottom:6px; left:50%; transform:translateX(-50%); width:6px; height:6px; background:var(--accent); border-radius:999px; box-shadow:0 0 12px rgba(234,179,8,0.25); }
+
+    /* timeline line */
+    .timeline-line{ position:absolute; left:1rem; top:1rem; bottom:1rem; width:2px; background:linear-gradient(180deg,var(--accent) 0%, rgba(234,179,8,0.06) 40%, transparent 100%); border-radius:1px; }
+
+    /* modal animations & preference */
+    .modal-hidden{ display:none !important; }
+    @media (prefers-reduced-motion: no-preference){
+      .fade-in { animation: fadeIn 260ms ease-out both; }
+      @keyframes fadeIn { from{opacity:0; transform: translateY(6px);} to{opacity:1; transform:none;} }
+    }
+
+    /* Responsive enhancements (desktop) */
+    @media(min-width:768px){
+      main#app-container{ padding-left:2.5rem; padding-right:2.5rem; }
+      header h2{ font-size:2.5rem; }
+      .layout-lg{ display:grid; grid-template-columns: 1fr 360px; gap:32px; align-items:start; }
+      .card-scroll{ max-height:34rem; overflow:auto; }
+    }
+
+    @media(min-width:1024px){
+      header h2{ font-size:3.25rem; }
+    }
+
+    /* small UI polish */
+    .rounded-3xl { border-radius:1.5rem; }
+    .rounded-2xl { border-radius:1rem; }
+    .glass-card { padding:1.25rem; }
+    .focus-ring:focus { outline:2px solid rgba(234,179,8,0.18); outline-offset:3px; border-radius:0.5rem; }
+
+    /* support safe-area and footer spacing */
+    .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0.75rem); }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- subtle background blobs (visual only) -->
+  <div aria-hidden="true" class="fixed inset-0 pointer-events-none z-0">
+    <div class="absolute -right-24 -top-24 w-96 h-96 rounded-full bg-green-900/20 blur-3xl"></div>
+    <div class="absolute -left-28 -bottom-20 w-80 h-80 rounded-full bg-yellow-600/6 blur-3xl"></div>
+  </div>
+
+  <!-- Top nav -->
+  <nav role="navigation" aria-label="Main" class="fixed inset-x-4 top-4 z-50">
+    <div class="glass rounded-full p-2 pl-3 flex items-center justify-between shadow-lg">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-700 to-green-900 flex items-center justify-center text-yellow-400 font-bold border border-white/5">EC</div>
+        <div class="leading-none">
+          <div class="text-[11px] tracking-wide uppercase font-semibold">Entebbe Club</div>
+          <div class="text-[10px] text-yellow-400 font-medium">Est. 1902</div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="search-btn" class="w-9 h-9 rounded-full glass flex items-center justify-center focus-ring" aria-label="Search (coming soon)">
+          🔍
+        </button>
+        <button id="notify-btn" class="w-9 h-9 rounded-full glass flex items-center justify-center focus-ring" aria-label="Notifications (coming soon)">
+          🔔
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main app container (scrollable) -->
+  <main id="app-container" class="relative z-10 pt-24 pb-28 px-4 pb-safe max-w-6xl mx-auto no-scrollbar">
+
+    <!-- Mobile-first stacked content — on large screens this becomes two-column -->
+    <div class="tab-content active" id="tab-home">
+
+      <header class="mb-6 flex flex-col md:flex-row md:items-center gap-6">
+    <div class="flex-1">
+        <div class="inline-block px-3 py-1 rounded-full border border-yellow-500/20 bg-yellow-500/10 text-yellow-400 text-[10px] font-bold uppercase tracking-widest mb-3">Centenary Edition</div>
+        
+        <h2 class="font-serif-vintage italic text-3xl leading-tight mb-2">
+            The History of <br>
+            <span class="text-yellow-400 not-italic font-black uppercase text-4xl tracking-tighter">Golf in Uganda</span>
+        </h2>
+
+        <p class="text-sm text-gray-300 max-w-prose">
+            A digital chronicle of resilience — from tsetse hazards to restoration and revival. 
+            Curated by <span class="text-yellow-400 font-semibold">Dr. George Bagambisa</span>.
+        </p>
+    </div>
+
+    <div class="relative w-full md:w-1/3 aspect-square max-w-[150px] mx-auto md:mx-0">
+        <div class="absolute inset-0 border-2 border-yellow-500/30 rounded-full scale-110 animate-pulse"></div>
+        <img src="11.jpg" class="w-full h-full object-cover rounded-full border-2 border-yellow-500" alt="Historical Reference">
+    </div>
+</header>
+
+      <div class="layout-lg">
+        <!-- Main column -->
+        <div class="space-y-6">
+
+          <!-- Featured Stories (horizontal scroll) -->
+          <section>
+            <div class="flex items-end justify-between mb-3">
+              <h3 class="text-lg font-semibold">Featured Stories</h3>
+              <div class="text-xs text-yellow-400 uppercase tracking-wider">Swipe to the Right→</div>
+            </div>
+
+            <div id="story-scroll" class="flex gap-4 overflow-x-auto pb-3 no-scrollbar snap-x">
+              <!-- story cards rendered here -->
+            </div>
+          </section>
+
+          <!-- Foreword / intro -->
+          <section class="glass rounded-2xl glass-card">
+            <div class="absolute right-6 -top-6 text-6xl opacity-6 pointer-events-none font-serif-vintage select-none">“</div>
+            <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-widest mb-3">Foreword</h4>
+            <div id="forward-content" class="text-sm text-gray-300 space-y-3 card-scroll"></div>
+            <div class="mt-3">
+              <button onclick="openModal('history-full')" class="text-xs font-semibold text-yellow-400 hover:underline focus-ring">Read full history</button>
+            </div>
+          </section>
+
+          <!-- Shortcards for quick actions on mobile -->
+          <section class="grid grid-cols-2 gap-3">
+            <button onclick="openModal('trophies')" class="glass rounded-2xl p-3 flex flex-col items-start gap-2 focus-ring">
+              <div class="text-2xl">🏆</div>
+              <div>
+                <div class="font-bold">Trophies</div>
+                <div class="text-xs text-gray-400">View the cabinet</div>
+              </div>
+            </button>
+
+            <button onclick="openModal('activities')" class="glass rounded-2xl p-3 flex flex-col items-start gap-2 focus-ring">
+              <div class="text-2xl">⛳</div>
+              <div>
+                <div class="font-bold">Activities</div>
+                <div class="text-xs text-gray-400">Club life & competitions</div>
+              </div>
+            </button>
+          </section>
+<section class="glass rounded-2xl glass-card p-4">
+    <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-widest mb-3">Golf Coverage Map</h4>
+    <div class="relative h-48 rounded-xl overflow-hidden cursor-pointer group" onclick="openMapModal()">
+        <img src="9.jpg" alt="Map of Uganda Golf Courses" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+        <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center group-hover:bg-black/20 transition-all">
+            <i class="fas fa-map-marked-alt text-white text-3xl mb-2"></i>
+            <button class="text-white font-bold text-sm tracking-widest uppercase">View Full Map</button>
+        </div>
+    </div>
+</section>
+
+<div id="map-modal" class="fixed inset-0 z-[100] hidden bg-black/95 flex items-center justify-center p-0 md:p-4 overflow-hidden">
+    <button onclick="closeMapModal()" class="absolute top-4 right-4 text-white text-4xl z-[110] drop-shadow-lg">
+        <i class="fas fa-times"></i>
+    </button>
+    
+    <div id="zoom-container" class="w-full h-full flex items-center justify-center touch-none overflow-hidden">
+        <img id="full-map-img" src="9.jpg" 
+             class="w-full h-auto max-h-screen md:max-w-4xl md:max-h-[90vh] object-contain shadow-2xl transition-transform duration-200 origin-center">
+    </div>
+</div>
+        </div>
+
+        <!-- Sidebar (on desktop) -->
+        <aside class="mt-4 md:mt-0">
+          <div class="glass rounded-2xl glass-card mb-4">
+            <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-widest mb-3">100 Year Timeline</h4>
+            <div class="relative">
+              <div class="timeline-line" aria-hidden="true"></div>
+              <div id="timeline-container" class="relative pl-8 space-y-6"></div>
+            </div>
+          </div>
+
+          <div class="glass rounded-2xl glass-card">
+            <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-widest mb-3">Hall of Fame</h4>
+            <div id="hall-of-fame" class="space-y-3"></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- History tab content (kept separate for semantic clarity) -->
+    <section id="tab-history-content" class="tab-content space-y-6" hidden>
+      <div class="flex items-center gap-3">
+        <button class="text-xs text-yellow-400 font-semibold" onclick="switchTab('home')">← Back</button>
+        <h2 class="text-2xl font-bold">The Chronicles (Full)</h2>
+      </div>
+
+      <article class="glass rounded-2xl glass-card card-scroll">
+        <h3 class="text-sm font-bold text-yellow-400 uppercase tracking-widest mb-3">Full History (1902–2002)</h3>
+        <div id="history-content" class="prose prose-invert max-w-none text-sm text-gray-200 space-y-4"></div>
+      </article>
+
+      <article class="glass rounded-2xl glass-card card-scroll">
+        <h3 class="text-sm font-bold text-yellow-400 uppercase tracking-widest mb-3">The Changing Face & Revival</h3>
+        <div id="change-content" class="prose prose-invert max-w-none text-sm text-gray-200 space-y-4"></div>
+      </article>
+    </section>
+
+    <!-- Heritage tab (separate) -->
+    <section id="tab-heritage-content" class="tab-content space-y-4" hidden>
+      <div class="flex items-center gap-3">
+        <button class="text-xs text-yellow-400 font-semibold" onclick="switchTab('home')">← Back</button>
+        <h2 class="text-2xl font-bold">Club Heritage</h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="glass rounded-2xl glass-card">
+          <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-widest mb-3">Notable Visitors</h4>
+          <div id="notables" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <div class="glass rounded-2xl glass-card">
+          <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-widest mb-3">Champions & Hall of Fame</h4>
+          <div id="champions" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Info / references -->
+    <section id="tab-info-content" class="tab-content space-y-6" hidden>
+      <div class="flex items-center gap-3">
+        <button class="text-xs text-yellow-400 font-semibold" onclick="switchTab('home')">← Back</button>
+        <h2 class="text-2xl font-bold">References & Notes</h2>
+      </div>
+
+      <div class="glass rounded-2xl glass-card">
+        <ol id="refs-list" class="text-xs text-gray-400 list-decimal pl-4 space-y-2"></ol>
+      </div>
+    </section>
+    
+
+  </main>
+
+  <!-- Bottom nav (mobile-first) -->
+  <nav class="fixed inset-x-4 bottom-4 z-50">
+    <div class="glass-strong rounded-2xl p-2 flex justify-around items-center max-w-lg mx-auto">
+      <button class="nav-btn active relative flex flex-col items-center gap-1 px-3 py-2 text-gray-300" onclick="switchTab('home')" aria-label="Home">
+        <span class="text-xl">🏠</span>
+        <span class="text-[10px] font-semibold uppercase">Home</span>
+      </button>
+
+      <button class="nav-btn relative flex flex-col items-center gap-1 px-3 py-2 text-gray-300" onclick="switchTab('history')" aria-label="History">
+        <span class="text-xl">📜</span>
+        <span class="text-[10px] font-semibold uppercase">History</span>
+      </button>
+
+      <button class="nav-btn relative flex flex-col items-center gap-1 px-3 py-2 text-gray-300" onclick="switchTab('heritage')" aria-label="Heritage">
+        <span class="text-xl">🏆</span>
+        <span class="text-[10px] font-semibold uppercase">Heritage</span>
+      </button>
+
+      <button class="nav-btn relative flex flex-col items-center gap-1 px-3 py-2 text-gray-300" onclick="switchTab('info')" aria-label="Info">
+        <span class="text-xl">📚</span>
+        <span class="text-[10px] font-semibold uppercase">Info</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Modal (bottom sheet on mobile; centered on desktop) -->
+  <div id="modal-overlay" class="modal-hidden fixed inset-0 z-[80] flex items-end sm:items-center justify-center px-4">
+    <div id="modal-backdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm" tabindex="-1" aria-hidden="true"></div>
+
+    <div id="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title" class="bg-[#071014] w-full max-w-3xl sm:rounded-2xl rounded-t-3xl border border-white/8 shadow-2xl transform translate-y-8 sm:translate-y-0 sm:scale-95 opacity-0 pointer-events-none transition-all duration-240">
+      <div class="p-4 sm:p-6 overflow-y-auto max-h-[85vh]">
+        <div class="flex justify-between items-start gap-4">
+          <h3 id="modal-title" class="text-lg font-bold text-yellow-400">Modal</h3>
+          <div class="flex items-center gap-2">
+            <button id="modal-close" class="text-gray-300 bg-black/20 hover:bg-white/10 rounded-full w-8 h-8 flex items-center justify-center focus-ring" aria-label="Close dialog">✕</button>
+          </div>
+        </div>
+
+        <div id="modal-content" class="mt-3 text-sm text-gray-200 space-y-4"></div>
+      </div>
+    </div>
+    
+  </div>
+
+  <script>
+    /* ============================
+       Data (kept local for now)
+       ============================ */
+    const contentData = {
+      stories: [
+        {
+          title: "The Tsetse Fly Scourge",
+          category: "Challenges",
+          icon: "🦟",
+          snippet: "Deadly hazard claiming ~200,000 lives during course construction.",
+          full: "Little had the zealous naturalist... known the seriousness of the Tsetse fly vested marshy belt. The fly was cause of sleeping sickness, a scourge that had around that period claimed some 200,000 people’s lives (mainly locals). The shore area therefore was a scare. The golf course construction work being completely a new experience and concept for the local labour. It was being carried out just on orders by the bosses and in rather unconducive conditions was no small matter. Nor was equipment for the local Baganda and Nubians all that encouraging. The best on offer for entirely hand-labour to work the bush and marshy-soil were hoes, picks, shovels, crude knives and axes.",
+          image: "1.jpg"
+        },
+        {
+          title: "Uganda's First Car",
+          category: "Innovation",
+          icon: "🚗",
+          snippet: "Imported by Governor Sir Hesketh Bell, the club's patron.",
+          full: "Entebbe Club as a matter of fact was later to be credited with ‘importing’ Uganda’s first car, an ALBION canvas hooded-4-seater saloon. It operated on petrol-combined-with-kerosene, crank-handle turned from the outside front, and the importer-cum-owner was non-less than Sir Hesketh Bell, the Governor. He was the club patron that we know! The roads were muddy or dusty tracks, oft off the beaten track. The order of the day for transport for the nobles was of bicycles, rickshaws, donkeys and mules and a few horses. There was a wide-spread belief that horses would not thrive in Uganda, thus limiting their numbers. The new car importation indeed added to the charm and provided magic spectacle whenever it was sighted or sounded.",
+          image: "2.jpeg"
+        },
+        {
+          title: "The 1972 Siege",
+          category: "Resilience",
+          icon: "⚔️",
+          snippet: "Uganda Army besieges the club, declaring it 'Officers Mess'.",
+          full: "Things had gone very well till one black day in 1972 during Amin’s reign with the curtain suddenly falling on the club (not sure from where the orders came!). But with a bang, the club was besieged by the Uganda Army and declared 'Officers Mess'. One can imagine the havoc and confusion the 19th Hole fell into, as each of the ousted members craved to save not pieces or such item of property but life. Except for the shock, there were no causalities reported. The non-resistant poor members since reduced to 'fours' were soon into their cars and drove home, not all ball, a tee-peg, a bag, a club nor trolley was retrieved for ever. Very soon the iron fist officers sat for a feast on the beers, spirits and the club was theirs.",
+          image: "3.jpeg"
+        },
+        {
+          title: "The Revival Effort",
+          category: "Restoration",
+          icon: "🔨",
+          snippet: "Led by Danny Nkata in 1973-1974 after the siege.",
+          full: "The Entebbe abundant rains and their resulting heavy grass vegetation were going to be a blessing in disguise. Once in a while and very much in a while, a tractor cutter would run through the failing golf course to try keep off mosquitoes around the abandoned golf course but with very little effect... The re-formation committee comprised of Dan Nkata as captain cum-chairman, Mr. Hussein (Vice Captain and Green Keeper); Jim Wright (Competition Member); Mrs. Joyce Wright (Hon. Secretary) and Miss. Pedersen (Treasurer). Permission was granted to use the Kakeeka Cricket Ground for meetings... The first official medal event took place on Saturday April 6, 1974, with a score golfers participating and won by the Golf Captain.",
+          image: "4.jpeg"
+        }
+      ],
+      timeline: [
+        { year: "1893", event: "Portal's Arrival", detail: "Sir Gerald Portal arrives at Entebbe-za-Mugula, a fishing village, and adopts it as the British station.", image: "1.jpg" },
+        { year: "1900", event: "Genesis of Golf", detail: "Sir Harry Hamilton Johnston lays out the Botanic Gardens, Zoo, and vanguard golf course alongside Lake Victoria." },
+        { year: "1902", event: "Course Construction", detail: "Work underway on the 9-hole course despite tsetse fly hazards; club formulation begins." },
+        { year: "1904", event: "Official Opening", detail: "Governor Col. Sir James Hayes Sadler opens the club on November 2nd with 35 European members." },
+        { year: "1908", event: "Expansion Influence", detail: "Entebbe expertise exported; A.C. Traffrey co-heads Kampala Gun Hill Course layout." },
+        { year: "1964", event: "Indigenous Golfers", detail: "First indigenous Ugandans, including Danny Nkata, play at Entebbe." },
+        { year: "1971", event: "Women Pioneers", detail: "First indigenous women golfers tee off at Entebbe on August 6th." },
+        { year: "1972", event: "The Siege", detail: "Uganda Army besieges the club, declaring it 'Officers Mess'; records and trophies lost." },
+        { year: "1974", event: "Revival Begins", detail: "Danny Nkata leads reformation; first post-siege medal on April 6th." },
+        { year: "1979-80", event: "Indigenous Captain", detail: "Augustine Osuban becomes the first indigenous Golf Captain." }
+      ],
+      champions: [
+        { name: "M. P. Tennant", title: "East African Open Champion 1925 (+2 Handicap)" },
+        { name: "Sir Philip Mitchell", title: "Scratch Golfer & Governor" },
+        { name: "John D. Rankine", title: "Uganda Amateur Open Winner 1935 & 1936" },
+        { name: "Dr. R.F.S. Hennessey", title: "Uganda Amateur Open Runner-Up 1938" },
+        { name: "Mrs. Jean Short", title: "East African Ladies Open Semi-Finalist" },
+        { name: "Mrs. Doreen Watt", title: "Queen's Plate Winner 1970" },
+        { name: "David Kiddie", title: "Bell Cup Runner-Up 1972" },
+        { name: "Alec Watt", title: "UGS Captain 1965" },
+        { name: "Augustine Osuban", title: "Golf Captain 1979-80 & Emormor of Teso" }
+      ],
+      notables: [
+        "Sir Daudi Chwa II (Kabaka of Buganda)", "Prince of Wales (later King Edward VIII)", "Sir Winston Churchill", "Sir Henry Cotton (Golf Course Designer)", "Sir Gordon Guggisburg (Governor of Gold Coast)", "Sir Jock Sturrock (Governor of Basutoland)", "Sir Owen Griffiths (Governor of Swaziland)", "Sir John Rankine", "Sir Henry S. Potter", "Sir George Duntze"
+      ],
+      forward: [
+        "When this edition of the Club's first 100 years of life and work commemoration was planned, it was hoped to include a history of the Club, with complete lists of all past officers, players achievements along with all trophies and the respective winners, etc. Photographs were to feature prominently as well. If it was not for what befell the Club in 1972, when the Uganda Army besieged the establishment, abusing practically all items, what a wonderful production we would have had for perusal. Much of what has been availed on the earlier history is only too patchy admittedly by Danny Nkata, which archivist did his best from personal records of the Club's past spanning from 1900 - 1974 or so. Thereare hardly any decorations!",
+        "The subsequent part and history, i.e. 1975 to-date being used to complete the booklet is bound to be more accurate. The Club Executive Committee, with the other sub-committees must all the same be commended for the effort.",
+        "Indeed, this publication is only a beginning and bound to be followed by a number of others, in due course. We must go to press to avoid more vacuum."
+      ],
+      historyFull: [
+        "GOLF in East Africa and for that matter in Uganda was first established at the Entebbe Club. This could have been as far back as the year 1900 or so, with the credit to lay out the complex amenities going to none less than Mr. Harry Hamilton Johnston (later on Sir Harry) which noted naturalist spared not a bit of his expertise in mapping out the Botanic Gardens, the Zoo and the vanguard golf course and beach if one would choose to say. The lot as then and as now lay shoulder -to-shoulder. All is enviously graced by the great Lake Victoria on show!",
+        "Entebbe means seat in Luganda, hence “Entebbe-za-Mugula; Mugula the man having been the sitting local ruler/chief when the British arrived at the station who would for his court sit around various stones/rocks in the area to administer his subjects. The spot, a kind of fishing village and settlement was readily adopted by the British Special Commissioner, Sir Gerald Portal on arrival in 1893. It became the British Government seat from 1894 when Uganda was declared a Protectorate. Portal preferred the location to thebustle and hustle of present-day commercial busy Kampala at 21 miles away inland. Intrigued Portal was prompted to name the place Port Alice, which was after his beloved wife's name. The name phased out later.",
+        "Harry H. Johnston, a sturdy Scotsman's duty in his charge as head of British administration in Uganda was, to work on the needed and famous year-1900- Agreement, thus making Uganda a British protectorate. In his diversity of interests and ready wit and concern for the people and love for sport must have made Johnson see the need to establish a sports club - the Entebbe Club. Among the facilities were lawn tennis (though the Anglican Church at Namirembe moved faster on the racket andflanlette ball game to establish/launch the court bang 1900 for the ‘first’). There was cricket there at Kakeeka oval by the 18th hole fairway) and of course the golf course.",
+        "Little had the zealous naturalist and as a matter of fact holder of Scottish Geographical Society Gold Medal Award, known the seriousness of the Tsetse fly vested marshy belt. The fly was cause of sleeping sickness, a scourge that had around that period claimed some 200,000 people’s live (mainly locals). The shore area therefore was a scare. The golf course construction work being completely a new experience and concept for the local labour. It was being carried out just on orders by the bosses and in rather unconducive conditions was no small matter. Nor was equipment for the local Baganda and Nubians all that encouraging. The best on offer for entirely hand-labour to work the bush and marshy- soil were hoes, picks, shovels, crude knives and axes. There were imaginarily not any karayas or such vessels to carry soils in nor any wheelbarrows and Hessian sheeting together with protective-type was out of question. The labourers dissented the work. It goes without saying that the tsetse-fly was on rampage and especially on the exposed bodies of the workers. There were pushes and recommendations from the Home Office England for the station to be abandoned and a better healthier location to be found elsewhere. Sir Harry had left in 1902 and had been succeeded by Col. Sir James Hayes Sadler and the general health conditions had not improved much but the golf course development and the entire station efforts would not just be abandoned like that. They had to go it though this and was a slow prayful exercise indeed! The course had to be 9 holes till the extension-9holes and a redesign by Joshua T. Tuhumwire were laidout. In truth the laying down exercise was embarked on under the direction of the Golf Committee. Most of the new bunkers, including the \"St. John's Church Pews\" are designed by Danny Nkata of the Daniain Linx & Playing Fields Consultancy.",
+        "Major (later on Colonel) L. H. R. Pope-Hennesy, DSO an autocrat was soon the commandant of the Sikh Troops stationed in Entebbe, using his offices did not hesitate in deploying his head-turbaned & pattee-legged men on the golf course carving. One glaring thing is that, the lay-out was deprived of the links-status as the tsetse fly made the lake-shoreline more hateful and more “unworkable”. The best done and compromise was for the amenity to overlook the Lake Victoria waters. By 1902 work was well underway and the Golf Club formulating(hence the Centenary Celebrations in 2002).",
+        "Governor and Patron of the Club at the time, Col. Sir James Hayes Sadler on Wednesday 2nd, November 1904 officially opened the club, whose membership strength was 35 strong, all Europeans. And considering that, the total European population in Uganda including Church missionaries in 1904 was of 386, the club in its initiation was doing very fine and was setting a pace. Sir James Hayes Sadler of the club opening-fame did not stop at that, as his next posting was to Kenya Colony from 1906, the same year Nairobi Golf Club (Royal) and indeed Kenya's first golf club was opened. Sir James became the new Club President and was certainly sharing his previous experience in the new country and flying the Entebbe banner wider and higher.",
+        "Such a thing like an own clubhouse at the time of opening would be far fetched, as there were other priorities. To go round this, two sizeable rooms found in the Entebbe Bazaar and property of Alidina Visram, an Indian Merchant were hired for the Clubs 19th Hole. There was a bar certainly, but things like a snooker/Billiard-Table had to wait till the new and imposing clubhouse was put up. It is today on show. To match with the new development a Goan chef was hired on full-time basis for first class catering.",
+        "Stables facilities at the new clubhouse would in the first place not be all that pressing at the inception, as motor cars in Uganda were hardly thought of. Entebbe Club as a matter of fact was later to be credited with ‘importing’ Uganda’s first car, an ALBION canvas hooded-4-seater saloon. It operated on petrol-combined-with-kerosene, crank-handle turned from the outside front, and the importer-cum-owner was non-less than Sir Hesketh Bell, the Governor. He was the club patron that we know!The roads were muddy or dusty tracks, oft off the beaten track. The order of the day for transport for the nobles was of bicycles, rickshaws, donkeys and mules and a few horses. There was a wide-spread belief that horses would not thrive in Uganda, thus limiting their numbers. The new car importation indeed added to the charm and provided magic spectacle whenever it was sighted or sounded.",
+        "The days of the tse-fly and sleeping sickness scourge dwindled, but one thing that one has always to contend with are the lake-flies (essami), which typical fauna in season swams the roughs and sort of threatens the golfers before the golfer gets accustomed. Essami are extremely docile and never to be confused with houseflies or the abominable mosquito. One soon comes to live with them!",
+        "The relatively rich soils and above all abundant rains all the year around found around Entebbe could only be better justified by having an emerald golfcourse, complete with grass cover of the greens. These traditionally and typically have a \"nap\". The 'napping' is enough character and challenge particularly to invaders or visitors and those pot-hunters. But what is more important was, the set up’s fore-runner example that from inception fetching in masses of admirers and copiers from throughout Uganda, Kenya, Tanganyika (read TZ) and Egypt. While by the time of independence in 1962 Uganda counted easily a score golf amenities, putting-green wise, Uganda new courses practically all followed the example of the first one. Kenya and indeed Tanganyika had practically all their golf courses putting-surfaces with sand-crude oil texture- “browns” the latter two frequented Entebbe and Uganda in general to study the technology and assimilate as well as eventually try converting to grass cover greens of the Entebbe fame and style.",
+        "Among the Entebbe expertise 'exported' was that of Mr. A.C. Traffrey, going to co-head the laying out team for the Kampala Gun Hill Course, accomplished in 1908. Then that of Mr. F. R. Kennedy of the Mbale and Tororo golf courses design/construction fame. Sent out too initially from Entebbe was Hugh Davidson (the golfing DC), who systematically moved across the country in the propagation of the game of golf and overseeing the golf courses. He would evaluate courses on mandate. Ashton Warner went to Lango to do wonders there, as did Sir George Duntze in Tooro. Then Mr. Roy Thomson sent out from Entebbe to Karamoja as DC and had to lay out a Moroto course, ending up in dusty browns for 'greens'.",
+        "As Governor Hesketh Bell once put it; “Abandoning the development of Entebbe and its amenities because of snags would not be rushed at at all” and that nine out of ten in my position would have ruined a great place!” Among the dignitaries and celebrities attracted to the Entebbe golf course over the century are: Sir Daudi Chwa II the Kabaka of Buganda, the Prince of Wales (later on King Edward VIII; Sir Winston Churchill, Home Secretary (later Prime Minister of Britain); professional writer and golf course designer Sir Henry Cotton; Sir Gordon Guggisburg, Governor of Gold Coast together with Lady Guggisburg in 1924. Sir Jock Sturrock, Governor of Basutoland; Sir Owen Griffiths, Governor of Swaziland; Mr. John Rankine (later Sir John) and Sir Henry S. Potter bothresidents of Zanzibar. Sir George Duntze, Mr. Charles Hartwell, Sir Bruce Hutt. Dr. D. G. Tomblings, Stacy Hanson and Eric Hussey (the three king-pins in establishing the Makerere Golf Course). Mr. George Turner, Mr. Reg Batten and Hon. Harry R. Jowitt, Director of Education were other highest place of learningof Makererean, Entebbe frequenters.",
+        "Close club activities as well as inter-club contests became order of the day right from inception, especially as transportation from place to place improved in Uganda. For tennis, Namirembe Tennis Club patronised by the Anglican Bishop there who boasted the first accomplished such facility established in 1900 and had exchanges with Entebbe Club. Kampala also had tennis as they did for cricketat the middling Kakeeka Oval. But golf became very prominent and dominant. On the close-scene among others were the REDFORD CUP (for men on handicap), the Tomkins Cup, the Leakey Bowl (mixed-foursomes), the Hodges Shield (        ) the Dewer Shield, the Van de Velde Bowl Mixed foursomes and the Mitchell Cup Ladies Club Championship Knockout. The Men's Club Championship Medal Cup, combined handicap 18-holes was a donation by Dr. G. C. Strathairn when Club Captain in 1911.",
+        "On the open front were the Bell Cup for off-scratch 36 medal; the Prince of Wales Cup (Bogey for men 18-holes given by the Duke of Windsor to the club at one of his several visits to East Africa; the Christian Cup (for men 18-holes Stableford) and donated jointly by two of the club veterans Chris Teen and Stan Foote on their departure repatriation in the 1960s. For \"Christan\", quite often folks mistook by adding an “I” to read ChristIan and would have second thoughts. This was especially during the Amin time. (A list of previous trophy winners appears elsewhere in this volume)",
+        "The trophy list grew after the re-opening of the club in 1973/4, with the WRIGHTS’ CUP (mixed Foursomes) and a donation by Joyce & JimWright around 1974 as the member-couple repatriated to the U.K.; then Pakistan 36-holes given by the Pakistan Embassy and Community on their National Day and then the very popular Casements Trophy given by tough veteran golfer Manzur Alam on behalf of his company CASEMENTS (A) (LTD. The latter and its sponsorship were still running until 2000. From this Entebbe beginning Casements for several years later sponsored the Uganda Armature Golf Open championship.",
+        "The golf course greenery on show as one entered Entebbe as Uganda gateway from the International Airport made much impact on visitors. The greater percentage of the government departments were stationed there. In turn golf courses mushroomed the country, such as Kampala Gun Hill (1908), Tooro (1915), Mbarara (1914), Jinja (1912), West Nile Arua (1922), Masindi (1920s), Lango-Lira (1923), Makerere (1923), Mbale (1932), Bubuulo (1932), Tororo (1932), Kabale (1935), Masaka (1935), Mubende (1930s), Soroti (1930s), Gulu (1945), Kilembe (1957), Namulonge (1960), Serere (1960s), an TICAF (1970s). There were golf glimpses also at different stages in Kitgum, Moroto (1960s), Moyo and an emerald putting green at the Mountains of the Moon at Fort Portal.Even Namirembe Cathedral had its turn around 1936, when two Scottie clerics viz. Bishop Edgar Stuart and Rev. John Duncan of the organ-fame laid out and down a mini-golf course on Cathedral shadows. Entebbe’s golf 'chronic' in Uganda one hundred years later for example has infected the Ssezibwa Golf complex in Mukono and near Ssezibwa Falls with an 18-hole lay out being laid down since 2001 and due to completion in 2002 or so. In the absence of a Golf Union till the Uganda Golf Union (UGU) came into place, Administrative Entebbe with the top Government officials travelling countrywide, the Entebbe members for a long time played their role in propagating the game throughout Uganda.",
+        "And even after the UGU advent, for example Sir Fredrick Crawford (Governor 1957-61) and Club Patron was instrumental in forming the Uganda Golfing Society in 1958 to which he became first president. The society organised regular visits to Kenya and Tanganyika and at home received the two visitors. Entebbe Club reciprocated with neighbour country clubs like Royal Nairobi, Mombasa, Kitale, Railways and Eldoret.",
+        "\"ANY ONE FROM A CLUB THROUGHOUT UGANDA IS WELCOME TO PLAY OVER THIS GOLF COURSE WITHOUT CHARGES, EXCEPT FOR THE ENTEBBECLUB MEMBERS CHARGES ARE ONE GUINEA PER HEAD PER ROUND\". Entebbe is known for hospitality and generosity to all newcomers, with her doors (fairways) in the earlier days open to any for free (NO GREEN FEES). It was only once in the 1940s or so that Tom Cox as Provincial Commissioner from the West Nile Arua, on seeking for an Entebbe-game, found rules 'somehow' excluding exemption for his club and was charged one guinea. He paid through the nose, played and rushed back to his station to put the big notice of the century. It was so reads above!",
+        "Golfers based at the club have come and gone. There have been the BIG and SMALL. It would be impossible to exhaust the list. Among them are: M. P. Tennant who was a plus-2 handicapper who also claimed the East African Open Golf Championship in 1925; Sir Philip Eugene Mitchellwhose handicap was a scratch golfer. Story has it that this Scot and golf-nut really never fancied playing with ladies much and in any case could not imagine being beaten by one at golf. In that typical pawky strang Scottish accent, he swore, (while still single) that, if any fair-sex single golfer beat him, he would join her! It happened one day the story continues and married the lucky lady. She became Lady Mitchell!",
+        "Dallas was Governor Mitchell's aide and was one –legged, playing the game regularly with the boss. John D. Rankine, Chief Secretary to the Governor was a very low handicap player and brought honours to the club by winning the coveted UgandaArmature Open (Gower’s Cup) in 1935 & 1936 with his boss, Sir Philip Mitchell becoming runner-up. It was a neck-to-neck battle and the two tied on gross 155 for the regulation 36 holes, only for the boss to bow out in the play-off. The next day, Rankine was subsequently transferred to elsewhere. Then on more friendly terms, the two paired during the King George V Memorial Trophy to become co-winners in 1937, repeating the fact in 1938.",
+        "Dr. R.F.S. Hennessey was runner-up in the 1938 Uganda Armature Open and paring with M. Walter were runners-up for the King George V Men's Trophy in 1937. For gender purposes Mrs. J.D. Rankine (Entebbe), 2/1 bt Mrs. D Currie (Kampala to win the 1939 Hussey Cup, Mrs. Mathews (Entebbe) beat Miss. A.E. Mc Gill of Kampala over the U.G.C., Kitante course to take the Hussey Cup. Mrs. J. Wood (Entebbe) 3/1 bt Mrs Gregg of Kampala at Entebbe to keep the 1944 Hussey Cup at home. Mrs J.P. Barbour (Entebbe) 5/3 lost to Kampala’s Mrs. L.R.J Absolon after (regrettably) the Entebbe golfer with option of choice for venue preferred to lay away! Mrs.E. Killick (Entebbe) and away lost the 1960 Hussey Cup to Mrs. Judy Lothe of U.G.C, Kampala. In the East African Ladies Open Championship held in Nairobi, Kenya Entebbe’s ace player Mrs. Jean Short (a very long hitter) only lost in the semi-finals to eventual winner Mrs. Andrery Morris of Kenya. And battling the 1962 (Independence-Year Hussey Cup Finals) at Kitante course, Mrs. L. Davies (Entebbe) in the sudden-death play off first hole which was No.1, the loser to home-player shot a 17 which was 13-over to bow out. The Entebbean showed great sporting spirit!",
+        "Dr. W. H.L. MacIntosh (Vet) with Dr. A.H. Mowatt (Medical) and both of Entebbe beat J.Hopwood & M. Mitchie in the finals of the knockout Cox Bowls Inter Departmental twin trophies of the 1946 edition. But Governor Sir Fredrick Crawford and partner Pete Gibson (Administration) in their 1957 bid to twin-bowls slumped and had to contend to second prize after P.W.D’s foursomes pair of J.Hare & J. Harwood humbled them. Entebbe Club at home beat a combined- Kobs/UGC side in 1963. Member R Hughes in February 1956 aced the Kampala 9th hole for hole-in-one. Mrs. Doreen Watt (Entebbe) beat a 43 ladies field to carry off the 1970 edition of the Queen's Plate in Jinja. Mrs. Biddy Lynam (Entebbe) was runner-up. David Kiddie in 1972 was runner up for the Bell Cup in Tororo, while another Entebbe player M. Rogers collected the same 'Bell' as winner from a Yusuf Musa. Alec Watt (Entebbe) was elected UGS Captain for 1965, while another Entebbean Ray Pendlington took the same position in 1971."
+      ],
+      changeFull: [
+        "GOLF in Uganda for a long time remained a Whiteman’s domain, with practically no African (except as caddies and of course labourers ever treading the golf course. There was just about one big exception of the Kabaka of Buganda, Sir Daudi Chwa II (1897 - 1939), who at a very humble teenage joined the game with some influence at the King's Mmengo Lubiri court in 1905. Mr. Jock Strurrock (later Sir Jock) typically, a Scot and an epic golfer wasted no time in preaching the 'golf gospel' to the youth-monarch. All resources, i.e land-space, labour etc. were on hand and a smallish but very picturesque golf course was laid-out and down inside the Mengo Lubiri (Palace). For scenery it was facing the Kabaka’s Lake which water spanse had previously been initiated by abscondee-Kabaka Mwanga. The royal golf course ran for several years till the Kabaka’s death in 1939 and the monarch together with his tutor-mentor practiced like mad on the private royal course but would come out on occasions to Entebbe and Kampala to burn the courses there and winning event-trophies at times! The Kabaka would at all times invite and entertain the Governor, and other administrators as well as dignitaries of his choice to share the 'royal' fortune. No other Ugandan golfed but thisblack man became a phenomenal hitter of the ball. Chwa II with the lone swing stopped suddenly as he died in his private home of Lusaka – Lukuli.",
+        "After Chwa’s passing away, no African was known to patronise the Entebbe course till believably in 1964, when I (author) emerging from Kilembe Mines as a reciprocator around X-mas time came to play the historical course. The people around, viz. caddies, barmen, name it couldn’t believe it and mistook me for a visiting American Negro. I was driving a posh German VW Combi Camper and was on an extensive golfing tour throughout Kenya and Uganda. At just about the same time five other African Ugandans, one Hussein, an army Brigadier from Jinja; then Sepi Kafeero, Khamadi Nsubuga Lwaki (both former Kampala caddies-cum-soccer international along with Jolly Joe Kiwanuka of the Express F.C.-fame massed to join the game and frequented the Entebbe course and changed the scene. And very vitally, Augustine Osuban, an Agriculturalist-graduate who had studied in Dundee Scotland (golf homeland) joined the forces from Soroti/Gulu before eventually in the mid-1970s transferring to live, work, and golf in Entebbe.",
+        "Osuban rose to heights by becoming the Golf Captain (1979/80). He did not stop there as from towards the end of the 20th Century he was installed the tribal leader Emormor of Teso. All that indigenous Ugandans - a few elite were doing in coming ‘near’ the club circles was, to play tennis at the Entebbe club court and cricket at Kakeeka, with an occasional swift guggle of a beer and other minerals at the 19th hole.",
+        "Indigenous women golfers had to wait a bit for their turn on the Entebbe show, till Friday afternoon 6th August 1971, as the then AFRICAN GOLFERS PROMOTION ASSOCIATION was being formed, a ladies team as well as a men’s had to be raised by me to challenge a Uganda Kobs (whites) side. While the needle match was scheduled for the Sunday over the Entebbe course there was an exclusive stableford event staged in between on Saturday at Kitante. For me as captain, I urged the gals to come out with me on the Friday for a practice familiarisation round. Taking the turf and as the first African females ever seen there were: Mrs. Mary Kasajja, a Uganda (Tororo), Mrs. Ann Exon, a Zairoise (Jinja), Mrs. Edwina Kiswaga Hieatt, a Tanzanian (Mbarara) and my wife Mrs. Victoria Nkata, a Uganda (Tooro). The four were sowing the seed, as today the number of fair sex regular players of the indigenous calibrecount to not less than 2-score and ten and are mixing up in the entire bag very well.",
+        "Lady golfers were at one time in Uganda very well established under the Ladies Golf Union. Entebbe Club as did UGC (Kampala), Jinja Club, Kilembe Mines, Tororo, and Mbale among others got to an independent stage at one time and held/managed their own affairs, events etc.",
+        "Things had gone very well till one black day in 1972 during Amin’s reign with the curtain suddenly falling on the club (not sure from where the orders came!). But with a bang, the club was besieged by the Uganda Army and declared 'Officers Mess'. One can imagine the havoc and confusion the 19th Hole fell into, as each of the ousted members craved to save not pieces or such item of property but life. Except for the shock, there were no causalities reported. The non-resistant poor members since reduced to 'fours' were soon into their cars and drove home, not all ball, a tee-peg, a bag, a club nor trolley was retrieved for ever. Very soon the iron fist officers sat for a feast on the beers, spirits and the club was theirs. The strongest barbed wire fencing surrounding the clubhouse and just above the 18th Green and below the scoreboard had been put in place. Indeed things (I mean golf things) start at Entebbe! Within the next few days speculations came in that the clubs at Jinja, Mbale, Gulu, Masindi, Mbarara among others had fallen victim; the Entebbe Club abominable way. It wasn’t the case at U.G.C in Kampala however. Exactly like the original turn of the century golf craze golf bush-fire like, what had befallen Entebbe was befalling her offsprings. The booze and other items could go a billion-fold but not just one-fold the record files, books, papers, trophies, wall-name-plaques or photographs, as they are treasures of priceless nature. All went and that’s it!",
+        "There were reports of hurried departure of expatriates from the affected stations destined for their home countries or other places of more safety. To that avid golfer, life short of the game wasn't worth anything! Back to Entebbe, hours ticked away, so the days and months up to a year-plus. The 'honeymoon' was to end some day, especially as the booze dwindled and the re-stocking never matched the consumption.",
+        "The Entebbe abundant rains and their resulting heavy grass vegetation were going to be a blessing in disguise. Once in a while and very muchin a while, a tractor cutter would run through the failing golf course to try keep off mosquitoes around the abandoned golf course but with very little effect. I walked there one day with a University and don and golfer-in- the making together with my golfing son Iain. As a golf writer-cum-historian and golfer based at Namulonge the scenario was pathetic. Immediately, a brilliant vision came to my mind to inquire if by any chance there were any former club golfers still around in Entebbe. After a year-plus scatter and two if by any chance any of the army personnel would be interested in playing. To the question one I was determined to leave the place with at least some answer. To question two, I got almost a spontaneous answer that, old acquaintance David Kiddie who had been Golf Captain was just about repatriating from the Government Press. And since the teller wasn’t kidding I approached David, who suggested of yet a couple of Jim & Joyce Wright at the Works Department. This worked fine, as Jim would some day be instrumental in getting some work done for me on the course. We had an adhoc meeting with the two of them and soon a hint came through about an army guy in the name of Hussein, a Corporal or something of the sort but very vitally a Nubian and who knew top-ranks in the army that mattered. Hussein had caddied or bag-carried and understood the whole golf cause. He was interested in joining us! We gave the Corporal mandate to go and try interest his fellow- tribesmen in the game and at the same time ask them if the ban on the course part of the premises could be lifted for any civilians and others who might choose to reactivate it. Within a few days positive (unwritten though) answer came through and we were given a green light to start reviving the golf course. The re-formation committee comprised of Dan Nkata as captain cum-chairman, Mr. Hussein (Vice Captain and Green Keeper); Jim Wright (Competition Member); Mrs. Joyce Wright (Hon. Secretary) and Miss. Pedersen (Treasurer). Permission was granted to use the Kakeeka Cricket Ground for meetings and we met every Tuesday with myself commuting from Namulonge / Kampala. Priority tasks for the new executive committee were to recruit members from both within Entebbe and from without. It goes without saying that through fees, fund donations would facilitate for the labour. Jim Wright was right on the ball by assuring for cutter machines both from his department and was liasing with the Town Council too in case of additional need. Namulonge-based and Entebbe commuting Schofield Muyingo and his wife Justina very generously offered labour of five or six months to work on the greens, tee-boxes and to reclaim the sand-bunkers. Work started outright, with bushfires lit to reduce the thickets. While concentration was put on the said three, the rough was left to look after itself. With a year-and-a-half’s golf thirst, activity had to start soon. Weekly Tuesday afternoon social golf over 9-holes started. The greens were more chippable than puttable but it was all fun and the first official medal eventtook place on Saturday April 6, 1974, with a score golfers participating and won by the Golf Captain, with Sheikh Abbas settling for runner-up. The Gombolola Chief from Katabi, Mr. Stanley Kisuule, who was an ex-KAR serviceman was chief guest for the occasion. The ex-soldier footed his way backwards and forwards from his headquarters but was very cheerful and most motivated!",
+        "Meantime un-official but certainly most acceptable permission was granted to use the Cricket Pavillion at Kakeeka for the Club’s 19th. Like the clubhouse proper, though much smaller the building and its therein had been vandalised and the desk swept clean. From the time of the course revival, the golf course hole sequence had been revised so as to avoid starting and finishing near the “Officers Mess”; so it meant No. 18 (today/former 9) for No. 1/10. Number 13 (former 8/17) for 18. The car parking or stables were ample as there weren’t so much such to facilitate for.",
+        "From the Uganda Golfing Society (U.G. S.) desks to which I was personally a member, the committee had passed a resolution in 1972/3 extending “membership” to the President of the Republic of Uganda. Arthur Bodger the Hon. Secretary received communication of the acceptance.",
+        "Revived Entebbe Club was as popular as ever before and in 1975 everything cooled down, with several top ranking army officers then absorbing in the civilian ranks. The Club was filling up once again and the Cricket Pavillion was getting out of fashion and overflowing really for the golfers…….. People like Colonel M. Ombia with his addition to the Club and his position on the other side, had his influence used toregain the old gorgeous clubhouse. As perhaps a gesture of appreciation the colonel was made Golf Captain for the term 1975/6."
+      ],
+      refs: [
+        "Danny Nkata personal records and archives (1900-1974).",
+        "Entebbe Club Executive Committee records (1975-2002).",
+        "Member recollections and testimonies from revival efforts.",
+        "Historical documents on British administration in Uganda.",
+        "Uganda Golf Union (UGU) and Uganda Golfing Society records."
+      ]
+    };
+
+    /* ============================
+       Utility & Rendering
+       ============================ */
+
+    const $ = v => document.querySelector(v);
+    const $$ = v => Array.from(document.querySelectorAll(v));
+
+    function renderStories(){
+      const container = $('#story-scroll');
+      container.innerHTML = '';
+      contentData.stories.forEach((s, i) => {
+        const card = document.createElement('article');
+        card.className = 'min-w-[260px] snap-center glass rounded-2xl p-4 flex flex-col justify-between h-56 relative overflow-hidden border border-white/5';
+        card.setAttribute('role','button');
+        card.setAttribute('tabindex','0');
+        card.setAttribute('aria-label', `Open story ${s.title}`);
+        card.innerHTML = `
+          <div class="absolute -right-4 -bottom-2 text-8xl opacity-6">${s.icon}</div>
+          <div>
+            <div class="text-[10px] inline-block px-2 py-1 rounded bg-yellow-500/8 text-yellow-400 font-semibold uppercase">${s.category}</div>
+            <h4 class="mt-3 font-bold">${s.title}</h4>
+            <p class="text-xs text-gray-300 mt-2 line-clamp-3">${s.snippet}</p>
+          </div>
+          <div class="mt-3 flex justify-between items-center">
+            <button class="text-xs text-yellow-400 font-semibold" data-idx="${i}">Read more</button>
+            <img loading="lazy" src="${s.image}" alt="" class="w-20 h-14 object-cover rounded-md opacity-90 shadow-sm">
+          </div>
+        `;
+        // click / keyboard to open
+        card.addEventListener('click', ()=> openModal('story', i));
+        card.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') openModal('story', i) });
+        container.appendChild(card);
+      });
+    }
+
+    function renderTimeline(){
+      const container = $('#timeline-container');
+      container.innerHTML = '';
+      contentData.timeline.forEach(t => {
+        const item = document.createElement('div');
+        item.className = 'relative pl-4 cursor-pointer';
+        item.innerHTML = `
+          <div class="absolute -left-[22px] top-1 w-3 h-3 rounded-full bg-gray-500 border border-black"></div>
+          <div class="text-[11px] font-bold text-yellow-400">${t.year}</div>
+          <div class="font-semibold text-white">${t.event}</div>
+          <div class="text-xs text-gray-400 mt-1 line-clamp-2">${t.detail}</div>
+        `;
+        item.addEventListener('click', ()=> openModal('timeline', t));
+        container.appendChild(item);
+      });
+    }
+
+    function renderHallOfFame(){
+      const el = $('#hall-of-fame');
+      el.innerHTML = '';
+      contentData.champions.forEach(c => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between gap-3 p-2 rounded-xl bg-white/2';
+        row.innerHTML = `
+          <div>
+            <div class="font-semibold">${c.name}</div>
+            <div class="text-xs text-gray-300">${c.title}</div>
+          </div>
+          <div class="text-yellow-400">🏅</div>
+        `;
+        el.appendChild(row);
+      });
+    }
+
+    function renderNotables(){
+      const el = $('#notables');
+      el.innerHTML = '';
+      contentData.notables.forEach(n => {
+        const chip = document.createElement('span');
+        chip.className = 'text-[11px] bg-white/3 px-3 py-1 rounded-full text-gray-200';
+        chip.textContent = n;
+        el.appendChild(chip);
+      });
+
+      // champions list on heritage
+      const champEl = $('#champions');
+      if(champEl){
+        champEl.innerHTML = '';
+        contentData.champions.forEach(c=>{
+          const item = document.createElement('div');
+          item.className = 'p-2 rounded-md bg-white/3';
+          item.innerHTML = `<div class="font-semibold">${c.name}</div><div class="text-xs text-gray-300">${c.title}</div>`;
+          champEl.appendChild(item);
+        });
+      }
+    }
+
+    function renderForward(){
+      const el = $('#forward-content');
+      el.innerHTML = '';
+      contentData.forward.forEach(p=>{
+        const pNode = document.createElement('p');
+        pNode.className = 'text-sm text-gray-300';
+        pNode.textContent = p;
+        el.appendChild(pNode);
+      });
+    }
+
+    function renderFullHistory(){
+      const el = $('#history-content');
+      el.innerHTML = '';
+      contentData.historyFull.forEach(p=>{
+        const pNode = document.createElement('p');
+        pNode.className = 'text-sm text-gray-200';
+        pNode.textContent = p;
+        el.appendChild(pNode);
+      });
+    }
+
+    function renderChange(){
+      const el = $('#change-content');
+      el.innerHTML = '';
+      contentData.changeFull.forEach(p=>{
+        const pNode = document.createElement('p');
+        pNode.className = 'text-sm text-gray-200';
+        pNode.textContent = p;
+        el.appendChild(pNode);
+      });
+    }
+
+    function renderRefs(){
+      const el = $('#refs-list');
+      el.innerHTML = '';
+      contentData.refs.forEach((r,i) => {
+        const li = document.createElement('li');
+        li.className = 'text-xs text-gray-400';
+        li.innerHTML = `<strong class="text-yellow-400">[${i+1}]</strong> ${r}`;
+        el.appendChild(li);
+      });
+    }
+
+    /* ============================
+       Tab switching & nav state
+       ============================ */
+    function switchTab(tab){
+      // hide all tab-content sections and show the requested one where applicable
+      const home = $('#tab-home');
+      const history = $('#tab-history-content');
+      const heritage = $('#tab-heritage-content');
+      const info = $('#tab-info-content');
+
+      // hide all first
+      [home, history, heritage, info].forEach(s => { if(s) { s.hidden = true; s.classList.remove('active'); } });
+
+      // switch
+      if(tab === 'home'){ home.hidden = false; home.classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
+      if(tab === 'history'){ history.hidden = false; history.classList.add('active'); }
+      if(tab === 'heritage'){ heritage.hidden = false; heritage.classList.add('active'); }
+      if(tab === 'info'){ info.hidden = false; info.classList.add('active'); }
+
+      // update bottom nav active state
+      const map = { home:0, history:1, heritage:2, info:3 };
+      $$('.nav-btn').forEach((btn, idx)=>{
+        btn.classList.toggle('active', idx === map[tab]);
+      });
+
+      // ensure some content is present
+      if(tab === 'history'){ renderFullHistory(); renderChange(); }
+    }
+
+    /* ============================
+       Modal (accessible)
+       ============================ */
+    const modalOverlay = $('#modal-overlay');
+    const modalCard = $('#modal-card');
+    const modalBackdrop = $('#modal-backdrop');
+    const modalContent = $('#modal-content');
+    const modalCloseBtn = $('#modal-close');
+
+    let lastFocused = null;
+
+    function openModal(type, payload = null){
+      lastFocused = document.activeElement;
+      // build modal html
+      let html = '';
+      let title = 'Details';
+
+      if(type === 'story'){
+        const s = contentData.stories[payload];
+        title = s.title;
+        html = `
+          <div class="rounded-md overflow-hidden">
+            <img src="${s.image}" alt="${s.title}" class="w-full h-44 object-cover rounded-md mb-4">
+            <div class="text-sm text-gray-200">${s.full}</div>
+          </div>
+        `;
+      } else if(type === 'timeline'){
+        title = `${payload.year} — ${payload.event}`;
+        html = `<div class="text-sm text-gray-200">${payload.detail}</div>`;
+      } else if(type === 'history-full'){
+        title = 'Full History';
+        html = contentData.historyFull.map(p => `<p class="text-sm text-gray-200 mb-3">${p}</p>`).join('');
+      } else if(type === 'change-full'){
+        title = 'Changing Face & Revival';
+        html = contentData.changeFull.map(p=>`<p class="text-sm text-gray-200 mb-3">${p}</p>`).join('');
+      } else if(type === 'trophies'){
+        title = 'Trophy Cabinet';
+        html = `
+          <div class="text-sm text-gray-200">
+            <ul class="list-disc pl-5 space-y-2">
+              <li>REDFORD CUP (for men on handicap)</li>
+              <li>Tomkins Cup</li>
+              <li>Leakey Bowl (mixed-foursomes)</li>
+              <li>Hodges Shield</li>
+              <li>Dewer Shield</li>
+              <li>Van de Velde Bowl (Mixed foursomes)</li>
+              <li>Mitchell Cup (Ladies Club Championship Knockout)</li>
+              <li>Men's Club Championship Medal Cup (donated by Dr. G. C. Strathairn in 1911)</li>
+              <li>Bell Cup (off-scratch 36 medal)</li>
+              <li>Prince of Wales Cup (Bogey for men 18-holes)</li>
+              <li>Christian Cup (men 18-holes Stableford)</li>
+              <li>WRIGHTS’ CUP (mixed Foursomes)</li>
+              <li>Pakistan 36-holes</li>
+              <li>Casements Trophy</li>
+            </ul>
+          </div>
+        `;
+      } else if(type === 'activities'){
+        title = 'Club Activities';
+        html = `
+          <div class="text-sm text-gray-200">
+            <ul class="list-disc pl-5 space-y-2">
+              <li>Lawn tennis (exchanges with Namirembe Tennis Club)</li>
+              <li>Cricket at Kakeeka Oval</li>
+              <li>Golf competitions: close club and inter-club contests</li>
+              <li>Propagation of golf across Uganda (e.g., sending experts to lay out new courses)</li>
+              <li>Reciprocal visits with Kenyan clubs like Royal Nairobi and Mombasa</li>
+              <li>Uganda Golfing Society tours to Kenya and Tanganyika</li>
+              <li>Social golf and medal events post-revival</li>
+            </ul>
+          </div>
+        `;
+      } else {
+        title = 'Information';
+        html = `<div class="text-sm text-gray-200">No details available.</div>`;
+      }
+
+      $('#modal-title').textContent = title;
+      modalContent.innerHTML = html;
+
+      // show modal
+      modalOverlay.classList.remove('modal-hidden');
+      setTimeout(()=>{
+        modalCard.style.pointerEvents = 'auto';
+        modalCard.style.opacity = '1';
+        modalCard.style.transform = 'none';
+        modalCard.classList.add('fade-in');
+      },10);
+
+      // trap focus inside modal
+      trapFocus(modalCard);
+      modalCloseBtn.focus();
+      // disable background scroll
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(){
+      // hide modal
+      modalCard.style.opacity = '0';
+      modalCard.style.transform = 'translateY(12px) scale(.98)';
+      setTimeout(()=>{
+        modalOverlay.classList.add('modal-hidden');
+        modalCard.style.pointerEvents = 'none';
+        modalCard.classList.remove('fade-in');
+        // restore focus & scroll
+        if(lastFocused && lastFocused.focus) lastFocused.focus();
+        document.body.style.overflow = '';
+      }, 180);
+    }
+
+    // simple focus trap for the single modal
+    function trapFocus(container){
+      const focusable = container.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
+      if(!focusable.length) return;
+      const first = focusable[0], last = focusable[focusable.length -1];
+      function handle(e){
+        if(e.key === 'Tab'){
+          if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+          else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+        } else if(e.key === 'Escape'){
+          closeModal();
+        }
+      }
+      container.addEventListener('keydown', handle);
+      // remove listener on close by using a short-lived wrapper (we remove when modal closes)
+      const observer = new MutationObserver(() => {
+        if(modalOverlay.classList.contains('modal-hidden')){
+          container.removeEventListener('keydown', handle);
+          observer.disconnect();
+        }
+      });
+      observer.observe(modalOverlay, { attributes:true, attributeFilter:['class'] });
+    }
+
+    modalCloseBtn.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', closeModal);
+    document.addEventListener('keydown', (e)=> {
+      if(e.key === 'Escape' && !modalOverlay.classList.contains('modal-hidden')) closeModal();
+    });
+
+    let scale = 1;
+let lastScale = 1;
+let startDist = 0;
+
+const img = document.getElementById('full-map-img');
+const container = document.getElementById('zoom-container');
+
+// --- PINCH TO ZOOM LOGIC ---
+container.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2) {
+        // Calculate initial distance between two fingers
+        startDist = Math.hypot(
+            e.touches[0].pageX - e.touches[1].pageX,
+            e.touches[0].pageY - e.touches[1].pageY
+        );
+    }
+});
+
+container.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 2) {
+        e.preventDefault(); // Prevent page scrolling during zoom
+        
+        const currentDist = Math.hypot(
+            e.touches[0].pageX - e.touches[1].pageX,
+            e.touches[0].pageY - e.touches[1].pageY
+        );
+        
+        // Scale range: 1x to 4x
+        scale = Math.min(Math.max(1, lastScale * (currentDist / startDist)), 4);
+        img.style.transform = `scale(${scale})`;
+    }
+});
+
+container.addEventListener('touchend', (e) => {
+    lastScale = scale; // Save the scale for the next gesture
+});
+
+// --- MODAL CONTROL FUNCTIONS ---
+function openMapModal() {
+    const modal = document.getElementById('map-modal');
+    modal.classList.remove('hidden');
+    
+    // Reset zoom state on open to ensure a clean start
+    scale = 1;
+    lastScale = 1;
+    img.style.transform = `scale(1)`;
+    
+    document.body.style.overflow = 'hidden';
+}
+
+function closeMapModal() {
+    const modal = document.getElementById('map-modal');
+    modal.classList.add('hidden');
+    
+    // Reset zoom state on close
+    scale = 1;
+    lastScale = 1;
+    img.style.transform = `scale(1)`;
+    
+    document.body.style.overflow = 'auto';
+}
+
+// Close modal if user clicks outside the image
+document.getElementById('map-modal').addEventListener('click', function(e) {
+    // Ensure we only close if clicking the backdrop, not the image itself
+    if (e.target === this || e.target === container) {
+        closeMapModal();
+    }
+});
+
+    /* ============================
+       Initialization
+       ============================ */
+    function init(){
+      renderStories();
+      renderTimeline();
+      renderHallOfFame();
+      renderNotables();
+      renderForward();
+      renderFullHistory();
+      renderChange();
+      renderRefs();
+
+      // default tab -> home
+      switchTab('home');
+
+      // a11y: keyboard shortcuts (H=home, T=history, R=references)
+      document.addEventListener('keydown', (e)=>{
+        if(e.ctrlKey || e.metaKey) return; // avoid overriding browser combos
+        if(e.key === 'h' || e.key === 'H') switchTab('home');
+        if(e.key === 't' || e.key === 'T') switchTab('history');
+        if(e.key === 'r' || e.key === 'R') switchTab('info');
+      });
+    }
+
+    // run
+    init();
+  </script>
+</body>
+</html>
