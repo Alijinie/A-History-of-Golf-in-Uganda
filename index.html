@@ -226,6 +226,7 @@
           <section class="grid grid-cols-2 gap-3">
             <button onclick="openModal('trophies')" class="glass rounded-2xl p-3 flex flex-col items-start gap-2 focus-ring">
               <div class="text-2xl">🏆</div>
+              <img src="78.jpeg" alt="Trophies" class="w-full h-full object-cover rounded-md border border-white/10">
               <div>
                 <div class="font-bold">Trophies</div>
                 <div class="text-xs text-gray-400">View the cabinet</div>
@@ -234,9 +235,11 @@
 
             <button onclick="openModal('activities')" class="glass rounded-2xl p-3 flex flex-col items-start gap-2 focus-ring">
               <div class="text-2xl">⛳</div>
+              <img src="79.jpg" alt="Club Activities" class="w-full h-full object-cover rounded-md border border-white/10 mt-2">
               <div>
                 <div class="font-bold">Activities</div>
                 <div class="text-xs text-gray-400">Club life & competitions</div>
+                
               </div>
             </button>
           </section>
@@ -496,7 +499,7 @@
         "Revived Entebbe Club was as popular as ever before and in 1975 everything cooled down, with several top ranking army officers then absorbing in the civilian ranks. The Club was filling up once again and the Cricket Pavillion was getting out of fashion and overflowing really for the golfers…….. People like Colonel M. Ombia with his addition to the Club and his position on the other side, had his influence used toregain the old gorgeous clubhouse. As perhaps a gesture of appreciation the colonel was made Golf Captain for the term 1975/6."
       ],
       refs: [
-        "Danny Nkata personal records and archives (1900-1974).",
+        {name:"Danny Nkata personal records and archives (1900-1974).", image: "<img src=\"77.jpg\" alt=\"King of Buganda\"> </img>"},
         "Entebbe Club Executive Committee records (1975-2002).",
         "Member recollections and testimonies from revival efforts.",
         "Historical documents on British administration in Uganda.",
@@ -582,10 +585,10 @@
         chip.className = 'flex items-center justify-between gap-3 p-2 rounded-xl bg-white/2';
         chip.innerHTML = `
           <div>
-            <div class="font-semibold">${n.name}</div>
+            <div class="font-semibold" align="left">${n.name}</div>
             <div class="relative w-full md:w-1/3 aspect-square max-w-[150px] mx-auto md:mx-0 object-cover rounded border-2 border-yellow-500">${n.image}</div>
           </div>
-          <div class="text-yellow-400">⭐</div>
+          <div class="text-yellow-50">⭐</div>
         `;
         el.appendChild(chip);
       });
@@ -639,10 +642,14 @@
     function renderRefs(){
       const el = $('#refs-list');
       el.innerHTML = '';
-      contentData.refs.forEach((r,i) => {
-        const li = document.createElement('li');
+      contentData.refs.forEach(n => {
+        const li = document.createElement('div');
         li.className = 'text-xs text-gray-400';
-        li.innerHTML = `<strong class="text-yellow-400">[${i+1}]</strong> ${r}`;
+        li.innerHTML = `<div>
+            <div class="font-semibold">${n.name}</div>
+            <div class="relative w-full md:w-1/3 aspect-square max-w-[150px] mx-auto md:mx-0 object-cover rounded border-2 border-yellow-500">${n.image}</div>
+          </div>
+          <div class="text-yellow-400">📚</div>`;
         el.appendChild(li);
       });
     }
@@ -713,7 +720,7 @@
         title = 'Changing Face & Revival';
         html = contentData.changeFull.map(p=>`<p class="text-sm text-gray-200 mb-3">${p}</p>`).join('');
       } else if(type === 'trophies'){
-        title = 'Trophy Cabinet';
+        title = 'Major Trophies-Early 1900s to 1980s';
         html = `
           <div class="text-sm text-gray-200">
             <ul class="list-disc pl-5 space-y-2">
@@ -735,7 +742,7 @@
           </div>
         `;
       } else if(type === 'activities'){
-        title = 'Club Activities';
+        title = 'Club Activities-Early 1900s to 1980s';
         html = `
           <div class="text-sm text-gray-200">
             <ul class="list-disc pl-5 space-y-2">
