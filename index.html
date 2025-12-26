@@ -445,16 +445,16 @@
         { name: "Augustine Osuban", title: "Golf Captain 1979-80 & Emormor of Teso" }
       ],
       notables: [
-        { name: "Sir Daudi Chwa II (Kabaka of Buganda)", image: "<img src=\"22.jpeg\" alt=\"King of Buganda\"> </img>" },
+        { name: `Sir Daudi Chwa II (Kabaka of Buganda)`, image: "<img src=\"22.jpeg\" alt=\"King of Buganda\"> </img>" },
         { name: "Prince of Wales (later King Edward VIII)", image: "<img src=\"23.jpeg\" alt=\"Prince of Wales\"> </img>" },
-        { name: "Sir Winston Churchill", image: "<img src=\"24.jpeg\" alt=\"Sir Winston Churchill\"> </img>" },
+        { name: "Sir Winston Churchill (British Prime Minister)", image: "<img src=\"24.jpeg\" alt=\"Sir Winston Churchill\"> </img>" },
         { name: "Sir Henry Cotton (Golf Course Designer)", image: "<img src=\"25.jpeg\" alt=\"Sir Henry Cotton\"> </img>" },
         { name: "Sir Gordon Guggisburg (Governor of Gold Coast)", image: "<img src=\"26.jpeg\" alt=\"Sir Gordon Guggisburg\"> </img>" },
         { name: "Sir Jock Sturrock (Governor of Basutoland)", image: "<img src=\"27.jpeg\" alt=\"Sir Jock Sturrock\"> </img>" },
         { name: "Sir Owen Griffiths (Governor of Swaziland)", image: "<img src=\"28.jpeg\" alt=\"Sir Owen Griffiths\"> </img>" },
-        { name: "Sir John Rankine", image: "<img src=\"29.jpeg\" alt=\"Sir John Rankine\"> </img>" },
-        { name: "Sir Henry S. Potter", image: "<img src=\"30.jpeg\" alt=\"Sir Henry S. Potter\"> </img>" },
-        { name: "Sir George Duntze", image: "<img src=\"31.jpeg\" alt=\"Sir George Duntze\"> </img>" }
+        { name: "Sir John Rankine (Sec. Africa Governors Conference)", image: "<img src=\"29.jpeg\" alt=\"Sir John Rankine\"> </img>" },
+        { name: "Sir Henry S. Potter (British Administrator, Zanzibar)", image: "<img src=\"30.jpeg\" alt=\"Sir Henry S. Potter\"> </img>" },
+        { name: "Sir George Duntze (British Empire Administrator)", image: "<img src=\"31.jpeg\" alt=\"Sir George Duntze\"> </img>" }
       ],
       forward: [
         "When this edition of the Club's first 100 years of life and work commemoration was planned, it was hoped to include a history of the Club, with complete lists of all past officers, players achievements along with all trophies and the respective winners, etc. Photographs were to feature prominently as well. If it was not for what befell the Club in 1972, when the Uganda Army besieged the establishment, abusing practically all items, what a wonderful production we would have had for perusal. Much of what has been availed on the earlier history is only too patchy admittedly by Danny Nkata, which archivist did his best from personal records of the Club's past spanning from 1900 - 1974 or so. Thereare hardly any decorations!",
@@ -585,8 +585,8 @@
         chip.className = 'flex items-center justify-between gap-3 p-2 rounded-xl bg-white/2';
         chip.innerHTML = `
           <div>
-            <div class="font-semibold" align="left">${n.name}</div>
-            <div class="relative w-full md:w-1/3 aspect-square max-w-[150px] mx-auto md:mx-0 object-cover rounded border-2 border-yellow-500">${n.image}</div>
+            <div class="font-semibold" align="center">${n.name}</div>
+            <div class="relative w-full md:w-1/3 aspect-square max-w-[150px] mx-auto md:mx-0 object-cover align-center rounded border-2 border-yellow-500">${n.image}</div>
           </div>
           <div class="text-yellow-50">⭐</div>
         `;
