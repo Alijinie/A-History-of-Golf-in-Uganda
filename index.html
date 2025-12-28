@@ -216,33 +216,52 @@
           <section class="glass rounded-2xl glass-card">
             <div class="absolute right-6 -top-6 text-6xl opacity-6 pointer-events-none font-serif-vintage select-none">“</div>
             <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-widest mb-3">Foreword</h4>
-            <div id="forward-content" class="text-sm text-gray-300 space-y-3 card-scroll"></div>
+            <div id="forward-content" class="text-sm text-gray-900 space-y-3 card-scroll"></div>
             <div class="mt-3">
               <button onclick="openModal('history-full')" class="text-xs font-semibold text-yellow-400 hover:underline focus-ring">Read full history</button>
             </div>
           </section>
 
           <!-- Shortcards for quick actions on mobile -->
-          <section class="grid grid-cols-2 gap-3">
-            <button onclick="openModal('trophies')" class="glass rounded-2xl p-3 flex flex-col items-start gap-2 focus-ring">
-              <div class="text-2xl">🏆</div>
-              <img src="78.jpeg" alt="Trophies" class="w-full h-full object-cover rounded-md border border-white/10">
-              <div>
-                <div class="font-bold">Trophies</div>
-                <div class="text-xs text-gray-400">View the cabinet</div>
-              </div>
-            </button>
+          <section class="grid grid-cols-2 md:grid-cols-4 gap-3">
+  
+  <button onclick="openModal('trophies')" class="glass rounded-2xl p-3 flex flex-col items-start gap-2 focus-ring">
+    <div class="text-2xl">🏆</div>
+    <img src="78.jpeg" alt="Trophies" class="w-full h-32 md:h-40 object-cover rounded-md border border-white/10">
+    <div>
+      <div class="font-bold">Trophies</div>
+      <div class="text-xs text-gray-400">View the cabinet</div>
+    </div>
+  </button>
 
-            <button onclick="openModal('activities')" class="glass rounded-2xl p-3 flex flex-col items-start gap-2 focus-ring">
-              <div class="text-2xl">⛳</div>
-              <img src="79.jpg" alt="Club Activities" class="w-full h-full object-cover rounded-md border border-white/10 mt-2">
-              <div>
-                <div class="font-bold">Activities</div>
-                <div class="text-xs text-gray-400">Club life & competitions</div>
-                
-              </div>
-            </button>
-          </section>
+  <button onclick="openModal('activities')" class="glass rounded-2xl p-3 flex flex-col items-start gap-2 focus-ring">
+    <div class="text-2xl">⛳</div>
+    <img src="79.jpg" alt="Club Activities" class="w-full h-32 md:h-40 object-cover rounded-md border border-white/10 mt-2">
+    <div>
+      <div class="font-bold">Activities</div>
+      <div class="text-xs text-gray-400">Club life & competitions</div>
+    </div>
+  </button>
+
+  <button onclick="openModal('earlyMembers')" class="glass rounded-2xl p-3 flex flex-col items-start gap-2 focus-ring">
+    <div class="text-2xl">🏆</div>
+    <img src="999.jpeg" alt="Trophies" class="w-full h-32 md:h-40 object-cover rounded-md border border-white/10">
+    <div>
+      <div class="font-bold">Members who defied Amin</div>
+      <div class="text-xs text-gray-400">View the List</div>
+    </div>
+  </button>
+
+  <button onclick="openModal('earlyMembers2')" class="glass rounded-2xl p-3 flex flex-col items-start gap-2 focus-ring">
+    <div class="text-2xl">🏆</div>
+    <img src="100.jpeg" alt="Trophies" class="w-full h-32 md:h-40 object-cover rounded-md border border-white/10">
+    <div>
+      <div class="font-bold">Other Early Members</div>
+      <div class="text-xs text-gray-400">View the List</div>
+    </div>
+  </button>
+  
+</section>
 <section class="glass rounded-2xl glass-card p-4">
     <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-widest mb-3">Golf Coverage Map</h4>
     <div class="relative h-48 rounded-xl overflow-hidden cursor-pointer group" onclick="openMapModal()">
@@ -769,6 +788,44 @@
               <li>Reciprocal visits with Kenyan clubs like Royal Nairobi and Mombasa</li>
               <li>Uganda Golfing Society tours to Kenya and Tanganyika</li>
               <li>Social golf and medal events post-revival</li>
+            </ul>
+          </div>
+        `;
+      } else if(type === 'earlyMembers'){
+        title = 'Notable Early Members';
+        html = `
+          <div class="text-sm text-gray-200">
+            <ul class="list-disc pl-5 space-y-2">
+              <li>Dan Nkata</li>
+              <li>Engineer Lotay</li>
+              <li>Father Miller</li>
+              <li>Mr. Nyombi Lawrence</li>
+              <li>Mr. Erasmus Sempala</li>
+              <li>Mr & Mrs. Wright</li>
+              <li>Engineer Somani</li>
+              <li>Engineer Bahtti</li>
+            </ul>
+          </div>
+        `;
+      } else if(type === 'earlyMembers2'){
+        title = 'Prominent Early Joiners';
+        html = `
+          <div class="text-sm text-gray-200">
+            <ul class="list-disc pl-5 space-y-2">
+              <li>Mr. Osuban</li>
+              <li>F.X Lubega</li>
+              <li>Miss Pederson</li>
+              <li>Eng. Grace Ikara</li>
+              <li>Eng. Baite Munobwa</li>
+              <li>Mr. Ruhukya</li>
+              <li>Mr. Mwalye</li>
+              <li>Mr. Balam Mubala</li>
+              <li>Capt. Ombia</li>
+              <li>Dr. & Mrs. Kalyegira</li>
+              <li>Dr. Chu</li>
+              <li>Dr. Lee</li>
+              <li>Mr. John Okumu</li>
+              <li>Mr. Obwoya</li>
             </ul>
           </div>
         `;
