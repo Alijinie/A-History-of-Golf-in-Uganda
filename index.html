@@ -69,6 +69,7 @@
   </script>
   <!-- Tailwind - kept for prototyping; can be compiled into a smaller CSS for production -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/b3a309548f.js" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 
   <style>
@@ -273,6 +274,11 @@
             </div>
         </div>
     </div>
+    <div>
+      <div class="font-bold">Club House Maintenance</div>
+      <div class="text-xs text-gray-400">Footage showing restoration efforts</div>
+    </div>
+</button>
 
     <button onclick="openModal('activities2')" class="glass rounded-2xl p-3 flex flex-col items-start gap-2 focus-ring group text-left">
     <div class="text-2xl">🎬</div> <div class="relative w-full mt-2">
@@ -313,6 +319,62 @@
     <div id="zoom-container" class="w-full h-full flex items-center justify-center touch-none overflow-hidden">
         <img id="full-map-img" src="9.jpg" 
              class="w-full h-auto max-h-screen md:max-w-4xl md:max-h-[90vh] object-contain shadow-2xl transition-transform duration-200 origin-center">
+    </div>
+</div>
+<section class="glass rounded-2xl glass-card p-4">
+    <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-widest mb-3">
+        Satellite Imagery
+    </h4>
+    
+    <div class="relative h-48 rounded-xl overflow-hidden cursor-pointer group" onclick="openSatModal(0)">
+        <img src="45.jpg" alt="Entebbe Golf Satellite View" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+        
+        <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center group-hover:bg-black/20 transition-all">
+            <i class="fas fa-satellite text-white text-3xl mb-2"></i>
+            <button class="text-white font-bold text-sm tracking-widest uppercase">
+                View Gallery
+            </button>
+        </div>
+        
+        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded backdrop-blur-md">
+            <i class="fas fa-layer-group mr-1"></i> 5 Images
+        </div>
+    </div>
+</section>
+
+<div id="sat-modal" class="fixed inset-0 z-[100] hidden bg-black/95 flex flex-col items-center justify-center transition-opacity duration-300 opacity-0">
+    
+    <button onclick="closeSatModal()" class="absolute top-32 right-4 text-white/70 hover:text-white text-4xl z-[110] transition-colors">
+        <i class="fas fa-times"></i>
+    </button>
+
+    <div class="relative w-full h-full flex items-center justify-center px-4 md:px-12">
+        
+        <button onclick="changeSatImage(-1)" class="absolute left-2 md:left-8 z-[110] p-4 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-all">
+            <i class="fas fa-chevron-left text-3xl md:text-5xl"></i>
+        </button>
+
+        <div class="relative max-w-5xl w-full flex justify-center">
+            <img id="sat-carousel-img" src="" 
+                 class="max-h-[85vh] max-w-full object-contain shadow-2xl rounded-lg transition-opacity duration-300 opacity-0">
+            
+            <div class="absolute -bottom-10 left-0 right-0 text-center">
+                <span id="sat-image-counter" class="text-white/80 font-mono text-sm tracking-wider bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm">
+                    1 / 5
+                </span>
+            </div>
+        </div>
+
+        <button
+  onclick="changeSatImage(1)"
+  class="absolute top-1/2 -translate-y-1/2 right-2 md:right-8
+         z-[999] p-4
+         text-white/70 hover:text-white
+         hover:bg-white/10
+         rounded-full transition-all">
+    <i class="fas fa-chevron-right text-3xl md:text-5xl"></i>
+</button>
+
     </div>
 </div>
         </div>
@@ -1038,6 +1100,99 @@ document.getElementById('map-modal').addEventListener('click', function(e) {
         closeMapModal();
     }
 });
+// 1. Data Structure: Entebbe Satellite Images
+const satImages = [
+    "46.jpg",              
+    "47.jpg",   
+    "48.jpg",
+    "429.jpg",
+    "50.jpg",
+    "August 2011.jpg",
+    "January 2013.jpg",
+    "January 2016.jpg",
+    "January 2017.jpg",
+    "January 2018.jpg",
+    "November 2019.jpg",
+    "December 2019.jpg",
+    "January 2020.jpg",
+    "May 2020.jpg",
+    "November 2020.jpg",
+    "December 2020.jpg",
+    "May 2022.jpg",
+    "October 2022.jpg",
+    "December 2022.jpg",
+    "45.jpg"
+
+];
+
+let currentSatIndex = 0;
+
+// 2. Select Elements using the new IDs
+const satModal = document.getElementById('sat-modal');
+const satCarouselImg = document.getElementById('sat-carousel-img');
+const satCounter = document.getElementById('sat-image-counter');
+
+// 3. Open Function
+function openSatModal(index = 0) {
+    currentSatIndex = index;
+    satModal.classList.remove('hidden');
+    
+    // Slight delay for fade-in animation
+    setTimeout(() => {
+        satModal.classList.remove('opacity-0');
+        updateSatCarousel();
+    }, 10);
+    
+    // Listen for keys specifically for the satellite modal
+    document.addEventListener('keydown', handleSatKeyNavigation);
+}
+
+// 4. Close Function
+function closeSatModal() {
+    satModal.classList.add('opacity-0');
+    setTimeout(() => {
+        satModal.classList.add('hidden');
+        satCarouselImg.src = ""; // Clear source
+    }, 300);
+    
+    document.removeEventListener('keydown', handleSatKeyNavigation);
+}
+
+// 5. Navigation Logic
+function changeSatImage(direction) {
+    currentSatIndex += direction;
+
+    if (currentSatIndex >= satImages.length) {
+        currentSatIndex = 0;
+    } else if (currentSatIndex < 0) {
+        currentSatIndex = satImages.length - 1;
+    }
+
+    updateSatCarousel();
+}
+
+// 6. DOM Update Helper
+function updateSatCarousel() {
+    // Fade out first
+    satCarouselImg.classList.add('opacity-0');
+
+    setTimeout(() => {
+        satCarouselImg.src = satImages[currentSatIndex];
+        satCounter.textContent = `${currentSatIndex + 1} / ${satImages.length}`;
+        
+        // Wait for image to load before fading in
+        satCarouselImg.onload = () => {
+            satCarouselImg.classList.remove('opacity-0');
+        };
+    }, 150);
+}
+
+// 7. Unique Keyboard Handler
+function handleSatKeyNavigation(e) {
+    if (e.key === 'ArrowRight') changeSatImage(1);
+    if (e.key === 'ArrowLeft') changeSatImage(-1);
+    if (e.key === 'Escape') closeSatModal();
+}
 
     /* ============================
        Initialization
