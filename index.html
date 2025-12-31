@@ -260,6 +260,38 @@
       <div class="text-xs text-gray-400">View the List</div>
     </div>
   </button>
+
+  <button onclick="openModal('activities1')" class="glass rounded-2xl p-3 flex flex-col items-start gap-2 focus-ring group text-left">
+    <div class="text-2xl">🎬</div> <div class="relative w-full mt-2">
+        <img src="83.jpeg" alt="Club Activities Video" class="w-full h-32 md:h-40 object-cover rounded-md border border-white/10 brightness-75 group-hover:brightness-100 transition-all duration-300">
+        
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="bg-white/20 backdrop-blur-sm p-3 rounded-full shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white">
+                  <path fill-rule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clip-rule="evenodd" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <button onclick="openModal('activities2')" class="glass rounded-2xl p-3 flex flex-col items-start gap-2 focus-ring group text-left">
+    <div class="text-2xl">🎬</div> <div class="relative w-full mt-2">
+        <img src="89.webp" alt="Club Activities Video" class="w-full h-32 md:h-40 object-cover rounded-md border border-white/10 brightness-75 group-hover:brightness-100 transition-all duration-300">
+        
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="bg-white/20 backdrop-blur-sm p-3 rounded-full shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white">
+                  <path fill-rule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clip-rule="evenodd" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div>
+      <div class="font-bold">Club House Maintenance</div>
+      <div class="text-xs text-gray-400">Footage showing restoration efforts</div>
+    </div>
+</button>
   
 </section>
 <section class="glass rounded-2xl glass-card p-4">
@@ -829,6 +861,46 @@
             </ul>
           </div>
         `;
+      } else if(type === 'activities1'){
+    title = 'Restoration and reconstruction of the club House walls'; // Updated Title
+    
+    // We inject a video tag into the HTML string
+    html = `
+      <div class="w-full flex flex-col gap-4">
+        <div class="relative rounded-lg overflow-hidden shadow-xl border border-white/10 bg-black">
+          
+          <video controls autoplay muted class="w-full aspect-video">
+            <source src="7000.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+
+        </div>
+        
+        <p class="text-sm text-gray-300 italic">
+          Footage covering on-going wall reconstruction and restoration.
+        </p>
+      </div>
+    `;
+    } else if(type === 'activities2'){
+    title = 'Efforts to restore the club house walls'; // Updated Title
+    
+    // We inject a video tag into the HTML string
+    html = `
+      <div class="w-full flex flex-col gap-4">
+        <div class="relative rounded-lg overflow-hidden shadow-xl border border-white/10 bg-black">
+          
+          <video controls autoplay muted class="w-full aspect-video">
+            <source src="8000.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+
+        </div>
+        
+        <p class="text-sm text-gray-300 italic">
+          Footage covering on-going wall reconstruction and restoration.
+        </p>
+      </div>
+    `;
       } else {
         title = 'Information';
         html = `<div class="text-sm text-gray-200">No details available.</div>`;
