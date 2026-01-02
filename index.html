@@ -1172,19 +1172,38 @@ function changeSatImage(direction) {
 
 // 6. DOM Update Helper
 function updateSatCarousel() {
-    // Fade out first
+    // Fade out current image
     satCarouselImg.classList.add('opacity-0');
 
-    setTimeout(() => {
-        satCarouselImg.src = satImages[currentSatIndex];
-        satCounter.textContent = `${currentSatIndex + 1} / ${satImages.length}`;
-        
-        // Wait for image to load before fading in
-        satCarouselImg.onload = () => {
+    const src = satImages[currentSatIndex];
+    satCounter.textContent = `${currentSatIndex + 1} / ${satImages.length}`;
+
+    // Create off-DOM image for decoding
+    const img = new Image();
+    img.src = src;
+
+    img.decode()
+        .then(() => {
+            satCarouselImg.src = src;
             satCarouselImg.classList.remove('opacity-0');
-        };
-    }, 150);
+        })
+        .catch(() => {
+            // Fallback if decode() fails
+            satCarouselImg.src = src;
+            satCarouselImg.classList.remove('opacity-0');
+        });
+
+    // Preload adjacent images for instant navigation
+    preloadAround(currentSatIndex);
 }
+function preloadAround(index) {
+    [index + 1, index - 1].forEach(i => {
+        const idx = (i + satImages.length) % satImages.length;
+        const img = new Image();
+        img.src = satImages[idx];
+    });
+}
+
 
 // 7. Unique Keyboard Handler
 function handleSatKeyNavigation(e) {
